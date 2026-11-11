@@ -98,6 +98,11 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
   .nav-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
   .nav-meta{font-size:11px;color:var(--fg-4);white-space:nowrap}
+  .nav .side-label{padding-top:10px}
+  .nav .side-label:first-child{padding-top:0}
+  .nav-ic{width:16px;height:16px;border-radius:5px;background:var(--ok-soft);color:var(--ok-fg);display:flex;align-items:center;justify-content:center;font-size:10px;flex:0 0 auto}
+  .nav-ic.done{background:var(--ok);color:#fff}
+  @media (max-width:860px){.nav .side-label{display:none}}
   .side-new{display:flex;align-items:center;gap:8px;padding:8px 8px;border-radius:8px;color:var(--fg-3);font-size:13px;margin-top:4px}
   .side-new:hover{background:var(--line-2);color:var(--fg)}
   .side-foot{display:flex;gap:4px;padding-top:12px;margin-top:8px;border-top:1px solid var(--line)}
@@ -193,7 +198,8 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .ring circle{fill:none;stroke-width:7;stroke-linecap:round}
   .ring .bg{stroke:var(--line-2)}
   .ring .fg{stroke:var(--accent);animation:ring-in 1.4s var(--ease) both;filter:drop-shadow(0 0 6px var(--accent-ring))}
-  .ring.warn .fg{stroke:var(--warn)} .ring.bad .fg{stroke:var(--bad)}
+  .ring.warn .fg{stroke:var(--warn)} .ring.bad .fg{stroke:var(--bad)} .ring.ok .fg{stroke:var(--ok)}
+  .hero.reached::before{background:linear-gradient(180deg,var(--ok),#4ade80)}
   .ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
   .ring .c b{font-size:24px;font-weight:650;letter-spacing:-.02em}
   .ring .c b small{font-size:11px;font-weight:500;color:var(--fg-3);margin-left:2px}
@@ -277,6 +283,22 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .next.empty::before{display:none}
   .next.empty .next-what{font-size:15px}
   .next.empty p{font-size:13px;color:var(--fg-3);margin:4px 0 14px}
+
+  /* ============ 每日必做 ============ */
+  .dlist{display:flex;flex-direction:column;gap:8px}
+  .ditem{display:flex;align-items:center;gap:12px;padding:11px 12px 11px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);transition:background .2s,border-color .2s}
+  .ditem:hover{border-color:color-mix(in srgb,var(--line) 55%,var(--accent))}
+  .ditem.done{background:var(--ok-soft);border-color:transparent}
+  .ditem .dtext{flex:1;min-width:0;font-size:14.5px;color:var(--fg);margin:-4px 0 -4px -8px;padding-left:8px}
+  .ditem.done .dtext{color:var(--fg-3);text-decoration:line-through;text-decoration-color:var(--fg-4)}
+  .chk{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);background:var(--panel);display:flex;align-items:center;justify-content:center;color:transparent;font-size:14px;flex:0 0 auto;transition:all .15s}
+  .chk:hover{border-color:var(--ok)}
+  .ditem.done .chk{background:var(--ok);border-color:var(--ok);color:#fff;animation:node-pop .45s var(--ease-pop)}
+  .ditem:hover .x{opacity:1}
+  .dadd{display:flex;gap:8px;margin-top:14px}
+  .dadd input{flex:1;min-width:0;font:inherit;font-size:14px;color:var(--fg);background:var(--panel);border:1px dashed var(--line);border-radius:11px;padding:9px 13px;outline:none;transition:border-color .15s,box-shadow .2s}
+  .dadd input::placeholder{color:var(--fg-4)}
+  .dadd input:focus{border-style:solid;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
 
   /* ============ 已完成 ============ */
   .hist li{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line-2);animation:rise .45s var(--ease) both}
@@ -390,7 +412,6 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
       <span class="logo" id="logo"></span>
       <div>工作台<small id="todayLine"></small></div>
     </div>
-    <div class="side-label">项目</div>
     <nav class="nav" id="nav"></nav>
     <button class="side-new" id="newProjectBtn"><span class="ic" data-i="plus"></span>新建项目</button>
     <div class="side-foot">
@@ -595,6 +616,7 @@ function load(){
     const d = JSON.parse(localStorage.getItem(KEY));
     if(d && Array.isArray(d.projects)){
       d.projects.forEach(p => { p.goal = p.goal || {}; if(p.goal.target === undefined){ p.goal.target = null; p.goal.unit = ''; p.goal.current = null; } });
+      daily = normDaily(d.daily) || {items:[], log:{}};
       return d.projects;
     }
   }catch(e){}
@@ -613,24 +635,102 @@ function demoData(){
     roadmap:[{id:'demo-stage', title:'完成第一版', status:'active', desc:''}],
     progress:'已完成 3 件作品。', blocker:'', current:null, history:[], notes:''}];
 }
+function normDaily(x){
+  if(!x || !Array.isArray(x.items)) return null;
+  const items = x.items.filter(i => i && typeof i.id === 'string' && typeof i.text === 'string').map(i => ({id:i.id, text:i.text, createdAt: typeof i.createdAt === 'string' ? i.createdAt : todayISO()}));
+  const log = {};
+  if(x.log && typeof x.log === 'object') for(const [k, v] of Object.entries(x.log)){ if(v && Array.isArray(v.done)) log[k] = {done:v.done.filter(d => typeof d === 'string'), total: Number.isInteger(v.total) ? v.total : v.done.length}; }
+  return {items, log};
+}
+function demoDaily(){
+  const t = todayISO(), ids = ['dd1','dd2','dd3','dd4'];
+  const items = [['dd1','矩阵账号各发 1 条内容'],['dd2','回复评论区和私信'],['dd3','记录今日数据（播放 / 咨询）'],['dd4','看 3 个同行账号的新内容']].map(([id,text]) => ({id, text, createdAt:addDays(t,-20)}));
+  const log = {}; for(let i = 1; i <= 6; i++) log[addDays(t,-i)] = {done:ids, total:4};
+  log[t] = {done:['dd1','dd2'], total:4};
+  return {items, log};
+}
+let daily = {items:[], log:{}};
+const stateObj = () => ({version:3, projects, daily});
 let projects = DEMO ? demoData() : CLOUD ? [] : load();
+if(DEMO) daily = demoDaily();
 let selectedId = DEMO ? null : localStorage.getItem(SEL_KEY);
-if(!projects.some(p => p.id === selectedId)) selectedId = projects[0]?.id || null;
+if(selectedId !== 'daily' && !projects.some(p => p.id === selectedId)) selectedId = projects[0]?.id || null;
 const byId = id => projects.find(p => p.id === id);
 const cur = () => byId(selectedId);
 
 function save(){
   if(DEMO) return;   // 演示态不落盘
-  localStorage.setItem(CLOUD ? CLOUD_CACHE_KEY : KEY, JSON.stringify({version:3, projects}));
+  localStorage.setItem(CLOUD ? CLOUD_CACHE_KEY : KEY, JSON.stringify(stateObj()));
   if(selectedId) localStorage.setItem(SEL_KEY, selectedId);
   document.getElementById('saveText').textContent = '已自动保存 ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) + (CLOUD ? ' · 正在同步' : ' · 仅存于本机浏览器');
   if(CLOUD) queueCloudSave();
 }
 
+/* ================= 每日必做 ================= */
+function dailyStats(){
+  const t = todayISO(), total = daily.items.length;
+  const todayDone = daily.log[t]?.done || [];
+  const doneToday = daily.items.filter(i => todayDone.includes(i.id)).length;
+  const complete = total > 0 && doneToday >= total;
+  let streak = 0, d = complete ? t : addDays(t, -1);
+  while(daily.log[d] && daily.log[d].total > 0 && daily.log[d].done.length >= daily.log[d].total){ streak++; d = addDays(d, -1); }
+  const y = daily.log[addDays(t, -1)];
+  return {total, doneToday, complete, streak, yesterday: y ? `${Math.min(y.done.length, y.total)} / ${y.total}` : null};
+}
+function syncDailyTotal(){ const t = todayISO(); if(daily.log[t]) daily.log[t].total = daily.items.length; }
+function renderDaily(){
+  const st = dailyStats(), t = todayISO();
+  const pct = st.total ? Math.round(st.doneToday / st.total * 100) : 0;
+  const C = 2 * Math.PI * 34;
+  const todayDone = daily.log[t]?.done || [];
+  const items = daily.items.map(i => {
+    const done = todayDone.includes(i.id);
+    return `<li class="ditem ${done ? 'done' : ''}">
+      <button class="chk" data-dact="toggle" data-did="${esc(i.id)}" title="${done ? '取消勾选' : '标记完成'}">${ic('check')}</button>
+      <div class="ed dtext" contenteditable="true" data-ed="dailyText" data-did="${esc(i.id)}" data-ph="这一项做什么">${esc(i.text)}</div>
+      <button class="x" data-dact="del" data-did="${esc(i.id)}" title="删除这一项">${ic('trash')}</button>
+    </li>`;
+  }).join('');
+  const chip = !st.total ? '<span class="chip">还没有添加事项</span>' : st.complete ? `<span class="chip ok">${ic('check')} 今日全部完成</span>` : `<span class="chip warn">还有 ${st.total - st.doneToday} 项没做</span>`;
+  return `<div class="wrap">
+    <header class="ph">
+      <div class="ph-row"><div class="crumb">${ic('check')} 每日必做 ${ic('chev')} <span>${fmtDate(t, true)}</span></div></div>
+      <h1 class="ptitle">每日必做</h1>
+      <div class="chips">${chip}${st.streak ? `<span class="chip accent">${ic('zap')} 连续全勤 ${st.streak} 天</span>` : ''}${st.yesterday ? `<span class="chip">昨日 ${st.yesterday}</span>` : ''}</div>
+    </header>
+    <section class="hero ${st.complete ? 'reached' : ''}">
+      <div>
+        <div class="eyebrow">${ic('activity')} 今日进度</div>
+        <p class="hero-text"><span class="big num"><span data-count="${st.doneToday}">${st.doneToday}</span></span><span class="unit">/ ${st.total} 项</span></p>
+        <div class="hero-desc">勾选只算当天，每天 0 点自动清空；事项本身一直保留，点文字可以改。</div>
+        <div class="rail ${st.complete ? 'ok' : ''}"><i style="width:${pct}%"></i></div>
+      </div>
+      <div class="ring-wrap">
+        <div class="ring ${st.complete ? 'ok' : ''}">
+          <svg viewBox="0 0 80 80"><circle class="bg" cx="40" cy="40" r="34"/><circle class="fg" cx="40" cy="40" r="34" style="--C:${C.toFixed(1)}" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${(C * (1 - pct/100)).toFixed(1)}"/></svg>
+          <div class="c"><b class="num"><span data-count="${pct}">${pct}</span><small>%</small></b><span>完成率</span></div>
+        </div>
+        <div class="ring-cap">今日</div>
+      </div>
+    </section>
+    <section class="card">
+      <div class="card-h">${ic('check')} 事项 <span class="cnt num">${st.total}</span></div>
+      ${items ? `<ul class="dlist">${items}</ul>` : '<div class="hist-empty">把每天必须做的事加进来，例如“矩阵账号各发 1 条内容”。</div>'}
+      <form class="dadd" id="dailyAddForm"><input id="dailyAddInput" maxlength="80" placeholder="添加一项，回车保存" autocomplete="off"><button class="btn primary sm" type="submit">${ic('plus')} 添加</button></form>
+    </section>
+  </div>`;
+}
+
 /* ================= 渲染：侧栏 ================= */
 function renderNav(){
   const nav = document.getElementById('nav');
-  nav.innerHTML = projects.map(p => {
+  const st = dailyStats();
+  const dailyItem = `<div class="side-label">今日</div>
+    <button class="nav-item nav-daily ${selectedId === 'daily' ? 'active' : ''}" data-sel="daily">
+      <span class="nav-ic ${st.complete ? 'done' : ''}">${ic('check')}</span><span class="nav-name">每日必做</span><span class="nav-meta num">${st.total ? `${st.doneToday}/${st.total}` : '空'}</span>
+    </button>
+    <div class="side-label">项目</div>`;
+  nav.innerHTML = dailyItem + projects.map(p => {
     const h = health(p);
     const g = p.goal || {};
     const meta = goalSet(g) ? (daysLeft(g.deadline) < 0 ? '逾期' : `剩 ${daysLeft(g.deadline)} 天`) : '未设目标';
@@ -796,13 +896,6 @@ function renderProject(p){
         <span class="chip">创建于 ${fmtDate(p.createdAt)}</span>
       </div>
     </header>
-    ${renderHero(p)}
-    ${renderKpis(p)}
-    <section class="card">
-      <div class="card-h">${ic('compass')} 总体计划</div>
-      <div class="ed" contenteditable="true" data-ed="plan" data-ph="一两句话：打算怎么做、为什么这么做">${esc(p.plan)}</div>
-    </section>
-    ${renderRoadmap(p)}
     <div class="two">
       <section class="card">
         <div class="card-h">${ic('activity')} 当前进度</div>
@@ -814,6 +907,13 @@ function renderProject(p){
       </section>
       ${renderNext(p)}
     </div>
+    ${renderHero(p)}
+    ${renderKpis(p)}
+    <section class="card">
+      <div class="card-h">${ic('compass')} 总体计划</div>
+      <div class="ed" contenteditable="true" data-ed="plan" data-ph="一两句话：打算怎么做、为什么这么做">${esc(p.plan)}</div>
+    </section>
+    ${renderRoadmap(p)}
     ${renderHistory(p)}
     <section class="card soft">
       <div class="card-h">${ic('note')} 备注</div>
@@ -860,6 +960,7 @@ function burst(x, y){
 }
 function render(){
   renderNav();
+  if(selectedId === 'daily'){ main.innerHTML = renderDaily(); afterRender(); return; }
   const p = cur();
   if(!p){
     main.innerHTML = `<div class="empty">
@@ -1052,16 +1153,53 @@ main.addEventListener('click', e => {
   }
 });
 
+/* 每日必做交互 */
+main.addEventListener('click', e => {
+  const t = e.target.closest('[data-dact]'); if(!t) return;
+  const id = t.dataset.did, today = todayISO();
+  if(t.dataset.dact === 'toggle'){
+    const before = dailyStats().complete;
+    const set = new Set(daily.log[today]?.done || []);
+    set.has(id) ? set.delete(id) : set.add(id);
+    daily.log[today] = {done:[...set], total: daily.items.length};
+    const cutoff = addDays(today, -120);
+    Object.keys(daily.log).forEach(k => { if(k < cutoff) delete daily.log[k]; });
+    save(); render();
+    const st = dailyStats();
+    if(st.complete && !before){ burst(innerWidth / 2, innerHeight / 3); toast('今日必做全部完成'); }
+  } else if(t.dataset.dact === 'del'){
+    const item = daily.items.find(i => i.id === id);
+    if(item && confirm(`删除「${item.text || '未命名'}」？`)){
+      daily.items = daily.items.filter(i => i.id !== id);
+      Object.values(daily.log).forEach(l => { l.done = l.done.filter(x => x !== id); });
+      syncDailyTotal(); save(); render();
+    }
+  }
+});
+main.addEventListener('submit', e => {
+  if(e.target.id !== 'dailyAddForm') return;
+  e.preventDefault();
+  const input = document.getElementById('dailyAddInput'), v = input.value.trim();
+  if(!v) return;
+  daily.items.push({id:uid(), text:v, createdAt:todayISO()});
+  syncDailyTotal(); save(); render();
+  document.getElementById('dailyAddInput')?.focus();
+});
+
 main.addEventListener('keydown', e => {
   const t = e.target;
-  if(e.key === 'Enter' && !e.shiftKey && t.matches('[data-ed="name"],[data-ed="msTitle"]')){ e.preventDefault(); t.blur(); }
+  if(e.key === 'Enter' && !e.shiftKey && t.matches('[data-ed="name"],[data-ed="msTitle"],[data-ed="dailyText"]')){ e.preventDefault(); t.blur(); }
   if(e.key === 'Escape' && t.matches('[data-ed]')) t.blur();
 });
 main.addEventListener('focusout', e => {
   const t = e.target; if(!t.matches || !t.matches('[data-ed]')) return;
-  const p = cur(); if(!p) return;
   const text = (t.innerText !== undefined ? t.innerText : t.textContent).replace(/\n+$/,'').trim();
   const f = t.dataset.ed;
+  if(f === 'dailyText'){
+    const item = daily.items.find(i => i.id === t.dataset.did); if(!item || item.text === text) return;
+    item.text = text; save(); return;
+  }
+  const p = cur(); if(!p) return;
   if(f === 'msTitle' || f === 'msDesc'){
     const m = p.roadmap.find(x => x.id === t.dataset.mid); if(!m) return;
     if(f === 'msTitle'){ if(m.title === text) return; m.title = text; save(); render(); return; }
@@ -1078,7 +1216,7 @@ main.addEventListener('focusout', e => {
 /* ================= 侧栏工具 ================= */
 document.getElementById('newProjectBtn').addEventListener('click', () => openProjectDlg('create'));
 document.getElementById('exportBtn').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify({version:3, exportedAt:new Date().toISOString(), projects}, null, 2)], {type:'application/json'});
+  const blob = new Blob([JSON.stringify({version:3, exportedAt:new Date().toISOString(), projects, daily}, null, 2)], {type:'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `工作台备份-${todayISO()}.json`;
   document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
 });
@@ -1091,7 +1229,7 @@ document.getElementById('importFile').addEventListener('change', e => {
       const d = JSON.parse(r.result);
       const list = d && Array.isArray(d.projects) ? d.projects : null;
       if(!list) throw new Error('bad');
-      if(confirm(`导入 ${list.length} 个项目，会覆盖当前全部内容，确定？`)){ projects = list; selectedId = projects[0]?.id || null; fx = true; save(); render(); }
+      if(confirm(`导入 ${list.length} 个项目，会覆盖当前全部内容，确定？`)){ projects = list; daily = normDaily(d.daily) || daily; selectedId = projects[0]?.id || null; fx = true; save(); render(); }
     }catch(err){ alert('导入失败：文件不是有效的备份格式。'); }
   };
   r.readAsText(file); e.target.value = '';
@@ -1161,7 +1299,7 @@ function rememberPending(){
   else localStorage.removeItem(PENDING_KEY);
 }
 function queueCloudSave(){
-  pendingState = JSON.stringify({version:3, projects});
+  pendingState = JSON.stringify(stateObj());
   rememberPending();
   clearTimeout(syncTimer);
   syncTimer = setTimeout(syncCloud, 350);
@@ -1193,13 +1331,17 @@ async function loadCloud(){
   const cached = JSON.parse(localStorage.getItem(PENDING_KEY) || 'null');
   if(cached?.revision) cached.revision = cached.revision.replace(/^W\//, '');
   pendingState = cached?.state || null;
-  projects = pendingState ? JSON.parse(pendingState).projects : result.data.projects;
+  const src = pendingState ? JSON.parse(pendingState) : result.data;
+  projects = src.projects;
+  // 服务端尚未保存 daily 时，退回本机缓存里的清单（不会跨设备同步，但不丢）
+  let cachedDaily = null; try{ cachedDaily = normDaily(JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || 'null')?.daily); }catch(e){}
+  daily = normDaily(src.daily) || cachedDaily || {items:[], log:{}};
   if(pendingState && cached.revision !== revision){
     revision = cached.revision;
     syncStatus('服务器有新版本，本机修改尚未同步。请先导出再重新加载。', false, true);
   }else syncStatus('已连接服务器');
-  if(!projects.some(p => p.id === selectedId)) selectedId = projects[0]?.id || null;
-  localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify({version:3, projects}));
+  if(selectedId !== 'daily' && !projects.some(p => p.id === selectedId)) selectedId = projects[0]?.id || null;
+  localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(stateObj()));
   localStorage.setItem(AUTH_KEY, accessKey);
   sessionStorage.removeItem(AUTH_KEY);
   authDlg.close();
