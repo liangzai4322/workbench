@@ -543,6 +543,7 @@ document.getElementById('logo').innerHTML = `<svg viewBox="0 0 24 24" style="wid
 
 /* ================= 基础工具 ================= */
 const KEY = 'workbench.v3';
+const CLOUD_CACHE_KEY = 'workbench.cloud.v3';
 const SEL_KEY = 'workbench.v3.selected';
 const THEME_KEY = 'workbench.theme';
 const STATUS = ['pending','active','done'];
@@ -620,7 +621,7 @@ const cur = () => byId(selectedId);
 
 function save(){
   if(DEMO) return;   // 演示态不落盘
-  localStorage.setItem(KEY, JSON.stringify({version:3, projects}));
+  localStorage.setItem(CLOUD ? CLOUD_CACHE_KEY : KEY, JSON.stringify({version:3, projects}));
   if(selectedId) localStorage.setItem(SEL_KEY, selectedId);
   document.getElementById('saveText').textContent = '已自动保存 ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}) + (CLOUD ? ' · 正在同步' : ' · 仅存于本机浏览器');
   if(CLOUD) queueCloudSave();
@@ -1195,7 +1196,7 @@ async function loadCloud(){
     syncStatus('服务器有新版本，本机修改尚未同步。请先导出再重新加载。', false, true);
   }else syncStatus('已连接服务器');
   if(!projects.some(p => p.id === selectedId)) selectedId = projects[0]?.id || null;
-  localStorage.setItem(KEY, JSON.stringify({version:3, projects}));
+  localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify({version:3, projects}));
   sessionStorage.setItem(AUTH_KEY, accessKey);
   authDlg.close();
   document.documentElement.classList.remove('cloud-locked');
