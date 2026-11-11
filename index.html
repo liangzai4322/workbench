@@ -1131,7 +1131,7 @@ const AUTH_KEY = 'workbench.access';
 const PENDING_KEY = 'workbench.cloud.pending';
 const authDlg = document.getElementById('authDlg');
 const authForm = document.getElementById('authForm');
-let accessKey = sessionStorage.getItem(AUTH_KEY) || '';
+let accessKey = localStorage.getItem(AUTH_KEY) || sessionStorage.getItem(AUTH_KEY) || '';
 let revision = null, pendingState = null, syncing = false, syncTimer;
 function syncStatus(text, retry=false, conflict=false){
   document.getElementById('saveText').textContent = text;
@@ -1148,7 +1148,10 @@ async function api(method, state){
       ...(state ? {body:state} : {})
     });
     const data = await response.json();
-    if(!response.ok) throw Object.assign(new Error(data.error || '服务器暂时不可用'), {status:response.status});
+    if(!response.ok){
+      if(response.status === 401){ localStorage.removeItem(AUTH_KEY); sessionStorage.removeItem(AUTH_KEY); accessKey = ''; }
+      throw Object.assign(new Error(data.error || '服务器暂时不可用'), {status:response.status});
+    }
     // Nginx / CDN 压缩会给 ETag 添加 W/；数据版本不随传输编码改变。
     return {data, revision:response.headers.get('ETag')?.replace(/^W\//, '')};
   } finally { clearTimeout(timer); }
@@ -1178,7 +1181,7 @@ async function syncCloud(){
     syncStatus('已保存到服务器 ' + new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'}));
   }catch(error){
     rememberPending();
-    if(error.status === 401){ accessKey = ''; sessionStorage.removeItem(AUTH_KEY); showAuth(error.message); }
+    if(error.status === 401) showAuth(error.message);
     const message = error.status === 412 ? error.message : '未同步，修改已保存在本机。' + (error.status === 401 ? '请重新输入密钥。' : '请重试。');
     syncStatus(message, error.status !== 412, error.status === 412);
     toast(message);
@@ -1197,7 +1200,8 @@ async function loadCloud(){
   }else syncStatus('已连接服务器');
   if(!projects.some(p => p.id === selectedId)) selectedId = projects[0]?.id || null;
   localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify({version:3, projects}));
-  sessionStorage.setItem(AUTH_KEY, accessKey);
+  localStorage.setItem(AUTH_KEY, accessKey);
+  sessionStorage.removeItem(AUTH_KEY);
   authDlg.close();
   document.documentElement.classList.remove('cloud-locked');
   document.getElementById('lockBtn').hidden = false;
@@ -1230,7 +1234,7 @@ document.getElementById('reloadCloud').addEventListener('click', async () => {
 });
 document.getElementById('lockBtn').addEventListener('click', () => {
   if(pendingState){ toast('请等修改同步成功后再锁定。'); return; }
-  sessionStorage.removeItem(AUTH_KEY); accessKey = '';
+  localStorage.removeItem(AUTH_KEY); sessionStorage.removeItem(AUTH_KEY); accessKey = '';
   document.getElementById('accessKey').value = '';
   document.documentElement.classList.add('cloud-locked'); showAuth();
 });
