@@ -1148,7 +1148,8 @@ async function api(method, state){
     });
     const data = await response.json();
     if(!response.ok) throw Object.assign(new Error(data.error || '服务器暂时不可用'), {status:response.status});
-    return {data, revision:response.headers.get('ETag')};
+    // Nginx / CDN 压缩会给 ETag 添加 W/；数据版本不随传输编码改变。
+    return {data, revision:response.headers.get('ETag')?.replace(/^W\//, '')};
   } finally { clearTimeout(timer); }
 }
 function rememberPending(){
@@ -1186,6 +1187,7 @@ async function loadCloud(){
   const result = await api('GET');
   revision = result.revision;
   const cached = JSON.parse(localStorage.getItem(PENDING_KEY) || 'null');
+  if(cached?.revision) cached.revision = cached.revision.replace(/^W\//, '');
   pendingState = cached?.state || null;
   projects = pendingState ? JSON.parse(pendingState).projects : result.data.projects;
   if(pendingState && cached.revision !== revision){
