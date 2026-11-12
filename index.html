@@ -88,13 +88,13 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .brand small{display:block;font-weight:400;font-size:11px;color:var(--fg-3);letter-spacing:0}
   .side-label{font-size:11px;font-weight:600;color:var(--fg-4);letter-spacing:.06em;padding:8px 8px 6px;text-transform:uppercase}
   .nav{display:flex;flex-direction:column;gap:2px;overflow:auto;flex:1}
-  .nav-item{
+  .nav-item,.nav-link{
     position:relative;display:flex;align-items:center;gap:9px;width:100%;text-align:left;padding:7px 10px 7px 12px;border-radius:10px;
     color:var(--fg-2);font-size:13px;transition:background .15s,transform .2s var(--ease),box-shadow .2s;
   }
-  .nav-item:hover{background:var(--line-2);transform:translateX(2px)}
-  .nav-item.active{background:var(--panel);color:var(--fg);box-shadow:var(--sh-sm),0 0 0 1px var(--line)}
-  .nav-item.active::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--accent),var(--accent-2));box-shadow:0 0 10px var(--accent-ring)}
+  .nav-item:hover,.nav-link:hover{background:var(--line-2);transform:translateX(2px)}
+  .nav-item.active,.nav-link.active{background:var(--panel);color:var(--fg);box-shadow:var(--sh-sm),0 0 0 1px var(--line)}
+  .nav-item.active::before,.nav-link.active::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--accent),var(--accent-2));box-shadow:0 0 10px var(--accent-ring)}
   .dot{width:8px;height:8px;border-radius:50%;background:var(--fg-4);flex:0 0 auto}
   .dot.ok{background:var(--ok)} .dot.warn{background:var(--warn)} .dot.bad{background:var(--bad)}
   .nav-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
@@ -104,6 +104,15 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .nav-ic{width:16px;height:16px;border-radius:5px;background:var(--ok-soft);color:var(--ok-fg);display:flex;align-items:center;justify-content:center;font-size:10px;flex:0 0 auto}
   .nav-ic.done{background:var(--ok);color:#fff}
   @media (max-width:860px){.nav .side-label{display:none}}
+  /* 已归档折叠行、回收站入口（回收站用 .nav-link，不计入项目列表） */
+  .side-toggle{display:flex;align-items:center;gap:6px;width:100%;text-align:left;font-size:11px;font-weight:600;color:var(--fg-4);letter-spacing:.06em;padding:12px 8px 6px;cursor:pointer}
+  .side-toggle .ic{transition:transform .2s var(--ease)}
+  .side-toggle.open .ic{transform:rotate(90deg)}
+  .side-toggle:hover{color:var(--fg-2)}
+  .nav-item.archived,.nav-link.nav-trash{opacity:.7}
+  .nav-item.archived:hover,.nav-item.archived.active,.nav-link.nav-trash:hover,.nav-link.nav-trash.active{opacity:1}
+  .nav-link.nav-trash{margin-top:8px}
+  .nav-link .ic{font-size:14px;color:var(--fg-3)}
   .side-new{display:flex;align-items:center;gap:8px;padding:8px 8px;border-radius:8px;color:var(--fg-3);font-size:13px;margin-top:4px}
   .side-new:hover{background:var(--line-2);color:var(--fg)}
   .side-foot{display:flex;gap:4px;padding-top:12px;margin-top:8px;border-top:1px solid var(--line)}
@@ -130,7 +139,7 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .chip.bad{background:var(--bad-soft);border-color:transparent;color:var(--bad-fg)}
 
   /* ============ 按钮 ============ */
-  .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:550;border:1px solid var(--line);background:var(--panel);color:var(--fg);box-shadow:var(--sh-sm);transition:background .15s,border-color .15s,color .15s,transform .18s var(--ease),box-shadow .25s var(--ease)}
+  .btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;height:34px;padding:0 14px;border-radius:10px;font-size:13px;font-weight:550;border:1px solid var(--line);background:var(--panel);color:var(--fg);box-shadow:var(--sh-sm);transition:background .15s,border-color .15s,color .15s,transform .18s var(--ease),box-shadow .25s var(--ease)}
   .btn:hover{background:var(--panel-2);border-color:var(--fg-4)}
   .btn:active{transform:scale(.97)}
   .btn.primary{background:linear-gradient(180deg,color-mix(in srgb,var(--accent-btn) 84%,#fff),var(--accent-btn));border-color:var(--accent-btn);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 1px 2px rgba(9,9,11,.18),var(--glow)}
@@ -285,7 +294,7 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .next-row .ic{color:var(--fg-4);font-size:15px;margin-top:3px}
   .next-row .k{font-size:11.5px;font-weight:600;color:var(--fg-4);letter-spacing:.03em}
   .next-row .v{color:var(--fg-2);font-size:13.5px}
-  .next-act{display:flex;gap:8px;align-items:center;margin-top:18px}
+  .next-act{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:18px}
   .next-act .meta{margin-left:auto;font-size:12px;color:var(--fg-4)}
   .next.overdue{overflow:hidden;border-color:color-mix(in srgb,var(--bad) 35%,var(--line));background:linear-gradient(180deg,var(--bad-soft),transparent 55%),var(--panel)}
   .next.overdue::before{inset:0 auto 0 0;width:4px;padding:0;border-radius:0;background:var(--bad);-webkit-mask:none;mask:none;animation:none;z-index:0}
@@ -294,6 +303,9 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .decide .ic{font-size:15px}
   .fresh-note{font-size:12px;font-weight:500;color:var(--fg-4)}
   .fresh-note.warn{color:var(--warn-fg)}
+  .hero .decide{margin:14px 0 0}
+  .decide-act{margin-left:auto;display:flex;gap:6px}
+  .ph-act{display:flex;align-items:center;gap:6px}
   .next.empty{border-style:dashed;border-color:var(--line);background:var(--panel-2);box-shadow:none}
   .next.empty::before{display:none}
   .next.empty .next-what{font-size:15px}
@@ -314,10 +326,24 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   .dadd input{flex:1;min-width:0;font:inherit;font-size:14px;color:var(--fg);background:var(--panel);border:1px dashed var(--line);border-radius:11px;padding:9px 13px;outline:none;transition:border-color .15s,box-shadow .2s}
   .dadd input::placeholder{color:var(--fg-4)}
   .dadd input:focus{border-style:solid;border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+  .dadd .row2{flex:1;min-width:0;grid-template-columns:1.4fr 1fr}
+
+  /* ============ 每周 / 每晚 ============ */
+  .card.attn{position:relative;overflow:hidden;border-color:color-mix(in srgb,var(--warn) 30%,var(--line))}
+  .card.attn::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--warn)}
+  .card.attn .card-h .ic{color:var(--warn)}
+  .card.slim .card-h{margin-bottom:0}
+  .ditem.manage{padding-left:52px}
+  a.dtext{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px;cursor:pointer;min-width:0}
+  a.dtext:hover{color:var(--accent-fg)}
+  a.dtext .ic{font-size:12px;color:var(--fg-4)}
+  .ditem.done a.dtext{color:var(--fg-3);text-decoration:line-through;text-decoration-color:var(--fg-4)}
+  .dlast{font-size:12px;color:var(--fg-4);white-space:nowrap}
 
   /* ============ 今日 ============ */
   .mini{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:500;color:var(--fg-3)}
   .mini .rail{width:96px;margin:0}
+  .mini .num{white-space:nowrap}
   .urgent{position:relative;overflow:hidden;border-color:color-mix(in srgb,var(--bad) 30%,var(--line))}
   .urgent::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--bad)}
   .urgent .card-h .ic{color:var(--bad)}
@@ -385,6 +411,12 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   html.still *,html.still *::before,html.still *::after{animation:none !important;transition:none !important}
   .dlg-act{display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--line-2)}
   .dlg-act .danger-ghost{margin-right:auto}
+  /* 结束项目弹窗的两个单选：外观同 .quick 胶囊；radio 透明覆盖，保留 required 与键盘焦点 */
+  .f .quick-opt{position:relative;display:inline-flex;align-items:center;gap:0;height:30px;margin:0;padding:0 16px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:550;color:var(--fg-2);background:var(--panel);cursor:pointer}
+  .quick-opt input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+  .f .quick-opt:hover{border-color:var(--accent);color:var(--accent-fg)}
+  .f .quick-opt[aria-checked="true"]{border-color:var(--accent);color:var(--accent-fg);background:var(--accent-soft)}
+  .quick-opt:focus-within{box-shadow:0 0 0 3px var(--accent-soft)}
 
   /* ============ 响应式：窄屏时侧栏变顶栏 ============ */
   @media (max-width:860px){
@@ -393,7 +425,11 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
     .brand{padding-bottom:8px}
     .side-label{display:none}
     .nav{flex-direction:row;gap:6px;overflow-x:auto;padding-bottom:4px}
-    .nav-item{width:auto;flex:0 0 auto;border:1px solid var(--line)}
+    .nav-item,.nav-link{width:auto;flex:0 0 auto;border:1px solid var(--line)}
+    .side-toggle{width:auto;flex:0 0 auto;padding:7px 8px}
+    .nav-link.nav-trash{margin-top:0}
+    .dadd .row2{grid-template-columns:1fr}
+    .mini .rail{display:none}   /* 窄屏卡头放不下徽标 + 进度条 + 计数，只留计数 */
     .nav-meta{display:none}
     .side-new{flex:0 0 auto}
     .side-foot{margin-top:6px;padding-top:8px}
@@ -606,6 +642,30 @@ if(location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location
   </form>
 </dialog>
 
+<!-- 结束项目（完成 / 放弃，结束即归档） -->
+<dialog id="endDlg">
+  <form id="endForm" novalidate>
+    <h2>结束项目</h2>
+    <p class="lead" id="endLead"></p>
+    <p class="help" id="endCurrent" style="margin:-12px 0 16px" hidden>当前下一步会一起归档，恢复项目时找回。</p>
+    <div class="f">
+      <label>结果 <span class="req">必填</span></label>
+      <div class="quick" id="endOutcome">
+        <label class="quick-opt" aria-checked="false"><input type="radio" name="outcome" value="done" required>完成</label>
+        <label class="quick-opt" aria-checked="false"><input type="radio" name="outcome" value="dropped">放弃</label>
+      </div>
+    </div>
+    <div class="f">
+      <label>一句复盘 <span class="req">必填</span></label>
+      <textarea name="review" required maxlength="500" placeholder="最有效的一件事是什么，下次还这么做"></textarea>
+    </div>
+    <div class="dlg-act">
+      <button type="button" class="btn ghost" data-close>取消</button>
+      <button type="submit" class="btn primary" id="endSubmit">确认结束</button>
+    </div>
+  </form>
+</dialog>
+
 <div class="toast" id="toast" hidden><span id="toastMsg"></span><button type="button" class="toast-btn" id="toastUndo" hidden>撤销</button></div>
 
 <script>
@@ -632,6 +692,9 @@ const ICONS = {
   layers:'<path d="m12 2 10 5-10 5L2 7Z"/><path d="m2 12 10 5 10-5M2 17l10 5 10-5"/>',
   clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
   chev:'<path d="m9 18 6-6-6-6"/>',
+  archive:'<rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4"/>',
+  undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
   xmark:'<path d="M18 6 6 18M6 6l12 12"/>'
 };
 const ic = (n, cls='') => `<span class="ic ${cls}"><svg viewBox="0 0 24 24">${ICONS[n]}</svg></span>`;
@@ -647,18 +710,23 @@ const STATUS = ['pending','active','done'];
 const STATUS_LABEL = {pending:'待开始', active:'进行中', done:'已完成'};
 const WEEK = ['日','一','二','三','四','五','六'];
 const DAY = 86400000;
+const NIGHT_START = 21, NIGHT_END = 2;   // 每晚可做的出现时段：21:00 – 次日 02:00；改成 22 点只需改这里
+const PARAMS = new URLSearchParams(location.search);
+// ?now=YYYY-MM-DD[THH:mm]：只用于测试与截图的模拟时间，时钟冻结。手动解析：new Date('2026-11-15') 会按 UTC 解析差一天；只给日期时取当天 12:00
+const FAKE_NOW = (() => { const m = /^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}))?$/.exec(PARAMS.get('now') || ''); return m ? new Date(+m[1], m[2] - 1, +m[3], m[4] === undefined ? 12 : +m[4], +(m[5] || 0)) : null; })();
+const now = () => FAKE_NOW ? new Date(FAKE_NOW) : new Date();
 
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 const z = n => String(n).padStart(2,'0');
 const toISO = d => `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`;
-const todayISO = () => toISO(new Date());
+const todayISO = () => toISO(now());
 function parseISO(s){ if(!s) return null; const [y,m,d] = s.split('-').map(Number); return (y&&m&&d) ? new Date(y,m-1,d) : null; }
 function addDays(iso,n){ const d = parseISO(iso); d.setDate(d.getDate()+n); return toISO(d); }
 function daysBetween(a,b){ const da = parseISO(a), db = parseISO(b); return (da&&db) ? Math.round((db-da)/DAY) : null; }
 const daysLeft = iso => daysBetween(todayISO(), iso);
 function fmtDate(iso, withWeek){
   const d = parseISO(iso); if(!d) return '';
-  const y = d.getFullYear() === new Date().getFullYear() ? '' : d.getFullYear()+'年';
+  const y = d.getFullYear() === now().getFullYear() ? '' : d.getFullYear()+'年';
   return `${y}${d.getMonth()+1}月${d.getDate()}日` + (withWeek ? ` 周${WEEK[d.getDay()]}` : '');
 }
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -676,6 +744,7 @@ function freshInfo(p){
   return {d, stale: d > 7, text: d === 0 ? '今天' : d === 1 ? '昨天' : `${d} 天前`};
 }
 function health(p){
+  if(archived(p)) return {k:'', text: p.status === 'done' ? '已完成' : '已放弃'};
   const g = p.goal || {};
   if((g.deadline && daysLeft(g.deadline) < 0) || (p.current && daysLeft(p.current.deadline) < 0)) return {k:'bad', text:'有逾期'};
   if(!goalSet(g)) return {k:'warn', text:'缺总体目标'};
@@ -705,17 +774,24 @@ function load(){
     const d = JSON.parse(localStorage.getItem(KEY));
     if(d && Array.isArray(d.projects)){
       d.projects.forEach(normProject);
-      daily = normDaily(d.daily) || {items:[], log:{}};
+      daily = normList(d.daily) || {items:[], log:{}};
+      weekly = normList(d.weekly) || {items:[], log:{}};
+      nightly = normList(d.nightly, {url:true}) || {items:[], log:{}};
+      trash = normTrash(d.trash);
       return d.projects;
     }
   }catch(e){}
   return seed();
 }
-const PARAMS = new URLSearchParams(location.search);
 const DEMO = PARAMS.get('demo') === '1';   // ?demo=1 ：加载演示数据且不写入 localStorage，供截图 / 预览
 const CLOUD = !DEMO && location.protocol !== 'file:' && !['localhost','127.0.0.1'].includes(location.hostname);
 if(PARAMS.get('still') === '1') document.documentElement.classList.add('still');   // ?still=1 ：关闭所有动画，供静态截图
 const goalSet = g => !!(g && g.target > 0 && g.unit && g.deadline);
+// 项目结束：status 缺省为 active；done / dropped 即已归档。所有列表、统计、今日页都只看 live()
+const archived = p => p.status === 'done' || p.status === 'dropped';
+const live = () => projects.filter(p => !archived(p));
+const goalReached = p => { const g = p.goal || {}; return goalSet(g) && typeof g.current === 'number' && g.current >= g.target; };
+const canClose = p => goalReached(p) || (p.roadmap.length > 0 && p.roadmap.every(m => m.status === 'done'));
 const fmtNum = v => new Intl.NumberFormat('zh-CN', {maximumFractionDigits:2}).format(v);
 function demoData(){
   const t = todayISO(), d = n => addDays(t, n);
@@ -738,12 +814,23 @@ function demoData(){
     roadmap:[], progress:'', progressUpdatedAt:d(-3), blocker:'',
     current:{id:'demo-c2', what:'写完下一篇', result:'1 篇发布', deadline:t, createdAt:d(-3)}, history:[], notes:''},
   {id:'demo-3', name:'第三个项目', createdAt:d(-40), plan:'',
-    goal:{metric:'', target:null, unit:'', current:null, deadline:'', start:d(-40)},
-    roadmap:[], progress:'起步阶段。', progressUpdatedAt:d(-12), blocker:'', current:null, history:[], notes:''}];
+    goal:{metric:'', target:5, unit:'次', current:2, deadline:d(-5), start:d(-40)},
+    roadmap:[], progress:'起步阶段。', progressUpdatedAt:d(-12), blocker:'', current:null, history:[], notes:''},
+  {id:'demo-4', name:'已完成的项目', createdAt:d(-50), plan:'',
+    goal:{metric:'', target:10, unit:'件', current:10, deadline:d(-2), start:d(-50)},
+    roadmap:[{id:'demo-s41', title:'做出第一件', status:'done', desc:'', due:d(-30), doneAt:d(-31)}],
+    progress:'10 件全部完成。', progressUpdatedAt:d(-3), blocker:'', current:null,
+    history:[{id:'demo-h41', what:'交付最后一件', result:'1 件成品', deadline:d(-4), createdAt:d(-10), doneAt:d(-4), outcome:'done'}],
+    notes:'', status:'done', endedAt:d(-3), review:'先做出 1 件完整的，再谈数量。'}];
 }
-function normDaily(x){
+// 每日 / 每周 / 每晚清单同构；url 只有每晚事项有
+function normList(x, {url = false} = {}){
   if(!x || !Array.isArray(x.items)) return null;
-  const items = x.items.filter(i => i && typeof i.id === 'string' && typeof i.text === 'string').map(i => ({id:i.id, text:i.text, createdAt: typeof i.createdAt === 'string' ? i.createdAt : todayISO()}));
+  const items = x.items.filter(i => i && typeof i.id === 'string' && typeof i.text === 'string').map(i => {
+    const o = {id:i.id, text:i.text, createdAt: typeof i.createdAt === 'string' ? i.createdAt : todayISO()};
+    if(url) o.url = typeof i.url === 'string' ? i.url : '';
+    return o;
+  });
   const log = {};
   if(x.log && typeof x.log === 'object') for(const [k, v] of Object.entries(x.log)){ if(v && Array.isArray(v.done)) log[k] = {done:v.done.filter(d => typeof d === 'string'), total: Number.isInteger(v.total) ? v.total : v.done.length}; }
   return {items, log};
@@ -755,12 +842,45 @@ function demoDaily(){
   log[t] = {done:['dd1','dd2'], total:4};
   return {items, log};
 }
-let daily = {items:[], log:{}};
-const stateObj = () => ({version:3, projects, daily});
+function demoWeekly(){
+  const wk = weekKey(todayISO()), ids = ['dw1','dw2','dw3'];
+  const items = [['dw1','整理本周复盘'],['dw2','清理收件箱与待办'],['dw3','规划下周重点']].map(([id, text]) => ({id, text, createdAt:addDays(wk, -30)}));
+  return {items, log:{[addDays(wk, -14)]:{done:ids, total:3}, [addDays(wk, -7)]:{done:ids, total:3}, [wk]:{done:['dw1'], total:3}}};
+}
+function demoNightly(){
+  const k = nightKey(), c = addDays(todayISO(), -20);
+  const items = [
+    {id:'dn1', text:'交易纪律课程', url:'https://example.com/discipline', createdAt:c},
+    {id:'dn2', text:'AI 生成的长文', url:'https://example.com/longread', createdAt:c},
+    {id:'dn3', text:'收藏夹里的文章', url:'', createdAt:c},
+    {id:'dn4', text:'资源群里的资源', url:'https://example.com/resources', createdAt:c},
+    {id:'dn5', text:'读书笔记整理', url:'', createdAt:c}];
+  return {items, log:{[addDays(k, -1)]:{done:['dn1'], total:5}, [addDays(k, -6)]:{done:['dn3'], total:5}}};
+}
+function demoTrash(){
+  const t = todayISO();
+  return [
+    {id:'dt1', kind:'daily', deletedAt:t, projectId:'', index:0, data:{id:'dd9', text:'刷 30 分钟同行视频', createdAt:addDays(t, -10)}},
+    {id:'dt2', kind:'stage', deletedAt:addDays(t, -2), projectId:'demo-1', index:2, data:{id:'demo-s9', title:'找人试读', desc:'', status:'pending', due:'', doneAt:''}},
+    {id:'dt3', kind:'project', deletedAt:addDays(t, -9), projectId:'', index:4, data:{id:'demo-9', name:'旧的副业尝试', createdAt:addDays(t, -60), plan:'',
+      goal:{metric:'', target:null, unit:'', current:null, deadline:'', start:addDays(t, -60)}, roadmap:[], progress:'', blocker:'', current:null, history:[], notes:''}}];
+}
+const KIND_LABEL = {project:'项目', stage:'阶段', step:'下一步', history:'记录', daily:'每日', weekly:'每周', nightly:'每晚'};
+const CHILD_KINDS = ['stage', 'step', 'history'];
+function normTrash(x){
+  if(!Array.isArray(x)) return [];
+  return x.filter(e => e && typeof e.id === 'string' && KIND_LABEL[e.kind] && e.data && typeof e.data === 'object')
+    .map(e => ({id:e.id, kind:e.kind, deletedAt: typeof e.deletedAt === 'string' ? e.deletedAt : todayISO(),
+      projectId: typeof e.projectId === 'string' ? e.projectId : '', index: Number.isInteger(e.index) && e.index >= 0 ? e.index : 0, data:e.data}));
+}
+let daily = {items:[], log:{}}, weekly = {items:[], log:{}}, nightly = {items:[], log:{}}, trash = [];
+const stateObj = () => ({version:3, projects, daily, weekly, nightly, trash});
 let projects = DEMO ? demoData() : CLOUD ? [] : load();
-if(DEMO) daily = demoDaily();
-let selectedId = DEMO ? (PARAMS.get('project') || 'daily') : localStorage.getItem(SEL_KEY);   // 演示态可用 ?project=<id> 直接打开项目页
-if(selectedId !== 'daily' && !projects.some(p => p.id === selectedId)) selectedId = 'daily';   // 没有记忆或记忆失效时落在「今日」
+if(DEMO){ daily = demoDaily(); weekly = demoWeekly(); nightly = demoNightly(); trash = demoTrash(); }
+const VIEWS = ['daily', 'trash'];   // 非项目的视图：今日、回收站
+// 演示态可用 ?project=<id> 直接打开项目页、?view=trash 打开回收站
+let selectedId = DEMO ? (PARAMS.get('view') === 'trash' ? 'trash' : PARAMS.get('project') || 'daily') : localStorage.getItem(SEL_KEY);
+if(!VIEWS.includes(selectedId) && !projects.some(p => p.id === selectedId)) selectedId = 'daily';   // 没有记忆或记忆失效时落在「今日」
 const byId = id => projects.find(p => p.id === id);
 const cur = () => byId(selectedId);
 
@@ -772,7 +892,24 @@ function save(){
   if(CLOUD) queueCloudSave();
 }
 
-/* ================= 每日必做 ================= */
+/* ================= 清单：每日必做 / 每周必做 / 每晚可做 ================= */
+// 三个清单同构：items 为事项，log 以周期键记录当期勾选。周期键：每日 = 今天，每周 = 本周一，每晚 = 夜晚所属日期
+const LISTS = {
+  daily:   {key: () => todayISO(),          keep: 120,    title:'每日必做'},
+  weekly:  {key: () => weekKey(todayISO()), keep: 26 * 7, title:'每周必做'},
+  nightly: {key: () => nightKey(),          keep: 120,    title:'每晚可做'}
+};
+const listOf = kind => kind === 'weekly' ? weekly : kind === 'nightly' ? nightly : daily;
+const listOpen = {weekly:false, nightly:false};   // 每周：完成后手动展开；每晚：白天手动展开管理
+function weekKey(iso){ return addDays(iso, -((parseISO(iso).getDay() + 6) % 7)); }
+function isNight(){ const h = now().getHours(); return h >= NIGHT_START || h < NIGHT_END; }
+function nightKey(){ return now().getHours() < NIGHT_END ? addDays(todayISO(), -1) : todayISO(); }   // 00:00–01:59 算前一天晚上
+function listStats(kind){
+  const L = listOf(kind), doneIds = L.log[LISTS[kind].key()]?.done || [];
+  const done = L.items.filter(i => doneIds.includes(i.id)).length;
+  return {total:L.items.length, done, complete: L.items.length > 0 && done >= L.items.length};
+}
+function syncTotal(kind){ const L = listOf(kind), k = LISTS[kind].key(); if(L.log[k]) L.log[k].total = L.items.length; }
 function dailyStats(){
   const t = todayISO(), total = daily.items.length;
   const todayDone = daily.log[t]?.done || [];
@@ -783,43 +920,117 @@ function dailyStats(){
   const y = daily.log[addDays(t, -1)];
   return {total, doneToday, complete, streak, yesterday: y ? `${Math.min(y.done.length, y.total)} / ${y.total}` : null};
 }
-function syncDailyTotal(){ const t = todayISO(); if(daily.log[t]) daily.log[t].total = daily.items.length; }
+function weekStreak(){
+  const wk = weekKey(todayISO());
+  let n = 0, k = listStats('weekly').complete ? wk : addDays(wk, -7);
+  while(weekly.log[k] && weekly.log[k].total > 0 && weekly.log[k].done.length >= weekly.log[k].total){ n++; k = addDays(k, -7); }
+  return n;
+}
+function lastSeen(id){   // 每晚事项上一次被勾选距今晚几天；没看过返回 null
+  const k = nightKey();
+  const ks = Object.keys(nightly.log).filter(x => x < k && nightly.log[x].done.includes(id)).sort();
+  return ks.length ? daysBetween(ks[ks.length - 1], k) : null;
+}
+// 清单行。每日清单保持原有 DOM 钩子（data-dact / data-did / data-ed="dailyText"），每周、每晚额外带 data-list
+function listRows(kind, check){
+  const L = listOf(kind), doneIds = L.log[LISTS[kind].key()]?.done || [];
+  const attr = kind === 'daily' ? '' : ` data-list="${kind}"`;
+  return L.items.map(i => {
+    const isDone = check && doneIds.includes(i.id), id = esc(i.id);
+    const cls = ['ditem', isDone ? 'done' : '', check ? '' : 'manage'].filter(Boolean).join(' ');
+    const chk = check ? `<button class="chk" data-dact="toggle"${attr} data-did="${id}" title="${isDone ? '取消勾选' : '标记完成'}">${ic('check')}</button>` : '';
+    const text = kind === 'nightly' && i.url
+      ? `<a class="dtext" href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.text)}${ic('link')}</a>`
+      : `<div class="ed dtext" contenteditable="true" data-ed="${kind === 'daily' ? 'dailyText' : 'listText'}"${attr} data-did="${id}" data-ph="这一项做什么">${esc(i.text)}</div>`;
+    let extra = '';
+    if(kind === 'nightly'){
+      const n = check && !isDone ? lastSeen(i.id) : null;
+      if(n) extra += `<span class="dlast">${n === 1 ? '上次 昨晚' : `上次 ${n} 天前`}</span>`;
+      extra += `<button class="x" data-dact="link"${attr} data-did="${id}" title="${i.url ? '修改链接' : '添加链接'}">${ic('link')}</button>`;
+    }
+    return `<li class="${cls}">${chk}${text}${extra}<button class="x" data-dact="del"${attr} data-did="${id}" title="删除这一项">${ic('trash')}</button></li>`;
+  }).join('');
+}
+function addForm(kind){
+  const btn = `<button class="btn primary sm" type="submit">${ic('plus')} 添加</button>`;
+  if(kind === 'weekly') return `<form class="dadd" id="weeklyAddForm" data-list="weekly"><input id="weeklyAddInput" maxlength="80" placeholder="添加每周做一次的事，回车保存（每周一重新开始）" autocomplete="off">${btn}</form>`;
+  if(kind === 'nightly') return `<form class="dadd" id="nightlyAddForm" data-list="nightly"><div class="row2"><input id="nightlyAddInput" maxlength="80" placeholder="想学的内容，回车保存" autocomplete="off"><input id="nightlyAddUrl" maxlength="2000" placeholder="链接（选填）" autocomplete="off"></div>${btn}</form>`;
+  return `<form class="dadd" id="dailyAddForm"><input id="dailyAddInput" maxlength="80" placeholder="添加一项，回车保存（勾选每天自动清空）" autocomplete="off">${btn}</form>`;
+}
+const miniBar = (done, total, ok) => `<div class="mini"><div class="rail ${ok ? 'ok' : ''}"><i style="width:${total ? Math.round(done / total * 100) : 0}%"></i></div><span class="num"><span data-count="${done}">${done}</span> / ${total}</span></div>`;
+function renderDailyCard(){
+  const st = dailyStats();
+  return `<section class="card">
+      <div class="card-h">${ic('check')} 每日必做
+        ${st.total ? `<div class="right">${miniBar(st.doneToday, st.total, st.complete)}</div>` : ''}
+      </div>
+      ${st.total ? `<ul class="dlist">${listRows('daily', true)}</ul>` : '<div class="hist-empty">把每天必须做的事加进来，例如“矩阵账号各发 1 条内容”。</div>'}
+      ${addForm('daily')}
+    </section>`;
+}
+function renderWeeklyCard(){
+  const st = listStats('weekly'), dow = now().getDay(), sunday = dow === 0, left = st.total - st.done;
+  const collapsed = st.complete && !listOpen.weekly;
+  const right = st.complete
+    ? `<span class="chip ok">${ic('check')}本周已完成 · 周一重新开始</span><button class="btn ghost sm" data-lopen="weekly">${listOpen.weekly ? '收起' : '展开'}</button>`
+    : st.total ? (sunday ? `<span class="badge warn">周日 · 还剩 ${left} 项</span>` : `<span class="badge plain">周日截止 · 还有 ${7 - dow} 天</span>`) + miniBar(st.done, st.total, false) : '';
+  return `<section class="card ${sunday && left > 0 ? 'attn' : ''} ${collapsed ? 'slim' : ''}" data-list="weekly">
+      <div class="card-h">${ic('calendar')} 每周必做<div class="right">${right}</div></div>
+      <div class="lbody" ${collapsed ? 'hidden' : ''}>
+        ${st.total ? `<ul class="dlist">${listRows('weekly', true)}</ul>` : ''}
+        ${addForm('weekly')}
+      </div>
+    </section>`;
+}
+function renderNightlyCard(){
+  const night = isNight(), start = `${z(NIGHT_START)}:00`, n = nightly.items.length;
+  if(!night && !listOpen.nightly){
+    return `<section class="card soft slim" data-list="nightly">
+      <div class="card-h">${ic('moon')} 每晚可做${n ? ` · ${n} 项` : ''} · ${start} 后出现<div class="right"><button class="btn ghost sm" data-lopen="nightly">管理</button></div></div>
+    </section>`;
+  }
+  const doneIds = nightly.log[nightKey()]?.done || [];
+  const seen = night ? nightly.items.filter(i => doneIds.includes(i.id)).length : 0;
+  const right = night ? (seen ? `<span class="badge plain">今晚已看 ${seen}</span>` : '') : `<button class="btn ghost sm" data-lopen="nightly">收起</button>`;
+  return `<section class="card ${night ? '' : 'soft'}" data-list="nightly">
+      <div class="card-h">${ic('moon')} 每晚可做${night ? '' : ` · ${start} 后出现`}<div class="right">${right}</div></div>
+      ${n ? `<ul class="dlist">${listRows('nightly', night)}</ul>` : ''}
+      ${addForm('nightly')}
+    </section>`;
+}
+
+/* ================= 今日页 ================= */
+const byDeadline = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 function todayRow(p){
   const c = p.current, act = p.roadmap.find(m => m.status === 'active'), h = health(p);
   const info = c ? due(c.deadline) : null;
+  const close = canClose(p) ? `<span class="badge ok">${goalReached(p) ? '已达成' : '路线完成'}</span>` : '';
   const end = c ? `<span class="badge ${info.tone}">${info.text}</span>`
     : `<button class="btn sm" data-act="newStep" data-id="${esc(p.id)}">${ic('plus')} 设定下一步</button>`;
   return `<div class="trow">
     <button class="tname" data-act="openProject" data-id="${esc(p.id)}" title="打开项目"><span class="dot ${h.k}"></span><span>${esc(p.name || '未命名项目')}</span></button>
     <div class="tmid">${act ? `<span class="chip accent tphase"><span class="dot"></span><span>${esc(act.title || '未命名')}</span></span>` : ''}<span class="twhat ${c ? '' : 'muted'}">${c ? esc(c.what) : '还没有下一步'}</span></div>
-    <div class="tend">${goalSet(p.goal) ? '' : '<span class="badge warn">缺目标</span>'}${end}</div>
+    <div class="tend">${close}${goalSet(p.goal) ? '' : '<span class="badge warn">缺目标</span>'}${end}</div>
   </div>`;
 }
 function renderToday(){
-  const st = dailyStats(), t = todayISO();
-  const pct = st.total ? Math.round(st.doneToday / st.total * 100) : 0;
-  const todayDone = daily.log[t]?.done || [];
-  const items = daily.items.map(i => {
-    const done = todayDone.includes(i.id);
-    return `<li class="ditem ${done ? 'done' : ''}">
-      <button class="chk" data-dact="toggle" data-did="${esc(i.id)}" title="${done ? '取消勾选' : '标记完成'}">${ic('check')}</button>
-      <div class="ed dtext" contenteditable="true" data-ed="dailyText" data-did="${esc(i.id)}" data-ph="这一项做什么">${esc(i.text)}</div>
-      <button class="x" data-dact="del" data-did="${esc(i.id)}" title="删除这一项">${ic('trash')}</button>
-    </li>`;
-  }).join('');
-  const overdue = projects.filter(p => p.current && daysLeft(p.current.deadline) < 0)
-    .sort((a, b) => a.current.deadline < b.current.deadline ? -1 : a.current.deadline > b.current.deadline ? 1 : 0);
-  const dueToday = projects.filter(p => p.current && daysLeft(p.current.deadline) === 0).length;
+  const st = dailyStats(), ws = listStats('weekly'), t = todayISO(), lp = live(), night = isNight();
+  const overdue = lp.filter(p => p.current && daysLeft(p.current.deadline) < 0).sort((a, b) => byDeadline(a.current.deadline, b.current.deadline));
+  const goalLate = lp.filter(p => goalSet(p.goal) && daysLeft(p.goal.deadline) < 0).sort((a, b) => byDeadline(a.goal.deadline, b.goal.deadline));
+  const dueToday = lp.filter(p => p.current && daysLeft(p.current.deadline) === 0).length;
   const rank = p => p.current ? 0 : goalSet(p.goal) ? 1 : 2;
-  const rows = [...projects].sort((a, b) => rank(a) - rank(b)
-    || (a.current && b.current ? (a.current.deadline < b.current.deadline ? -1 : a.current.deadline > b.current.deadline ? 1 : 0) : 0));
+  const rows = [...lp].sort((a, b) => rank(a) - rank(b) || (a.current && b.current ? byDeadline(a.current.deadline, b.current.deadline) : 0));
+  const sunday = now().getDay() === 0, wst = weekStreak(), late = overdue.length + goalLate.length;
   const chips = [
+    FAKE_NOW ? `<span class="chip warn">${ic('clock')} 模拟时间 ${fmtDate(t)} ${z(now().getHours())}:${z(now().getMinutes())}</span>` : '',
     st.total ? `<span class="chip ${st.complete ? 'ok' : ''}">${st.complete ? ic('check') : ''}每日 ${st.doneToday}/${st.total}</span>` : '',
-    overdue.length ? `<span class="chip bad">${ic('alert')}逾期 ${overdue.length}</span>` : '',
+    ws.total ? `<span class="chip ${ws.complete ? 'ok' : sunday ? 'warn' : ''}">${ws.complete ? ic('check') : ''}每周 ${ws.done}/${ws.total}</span>` : '',
+    late ? `<span class="chip bad">${ic('alert')}逾期 ${late}</span>` : '',
     dueToday ? `<span class="chip warn">今天到期 ${dueToday}</span>` : '',
-    st.streak ? `<span class="chip accent">${ic('zap')} 连续全勤 ${st.streak} 天</span>` : ''
+    st.streak ? `<span class="chip accent">${ic('zap')} 连续全勤 ${st.streak} 天</span>` : '',
+    wst >= 2 ? `<span class="chip accent">${ic('zap')} 连续 ${wst} 周</span>` : ''
   ].join('');
-  const urgent = overdue.map(p => `<div class="trow">
+  const stepRows = overdue.map(p => `<div class="trow">
       <button class="tname" data-act="openProject" data-id="${esc(p.id)}" title="打开项目"><span class="dot bad"></span><span>${esc(p.name || '未命名项目')}</span></button>
       <div class="tmid"><span class="twhat">${esc(p.current.what)}</span><span class="badge bad">${due(p.current.deadline).text}</span></div>
       <div class="tend">
@@ -828,32 +1039,122 @@ function renderToday(){
         <button class="btn ghost sm" data-act="abandonStep" data-id="${esc(p.id)}">放弃</button>
       </div>
     </div>`).join('');
+  const goalRows = goalLate.map(p => `<div class="trow">
+      <button class="tname" data-act="openProject" data-id="${esc(p.id)}" title="打开项目"><span class="dot bad"></span><span>${esc(p.name || '未命名项目')}</span></button>
+      <div class="tmid"><span class="twhat muted">总体目标 ${fmtNum(p.goal.target)} ${esc(p.goal.unit)}</span><span class="badge bad">总体截止已过 ${-daysLeft(p.goal.deadline)} 天</span></div>
+      <div class="tend">
+        <button class="btn sm" data-act="extendGoal" data-id="${esc(p.id)}">延期</button>
+        <button class="btn ghost sm" data-act="endProject" data-id="${esc(p.id)}">结束</button>
+      </div>
+    </div>`).join('');
+  const urgentCard = late ? `<section class="card urgent">
+      <div class="card-h">${ic('alert')} 需要处理 <span class="cnt num">${late}</span></div>
+      <div class="tlist">${stepRows}${goalRows}</div>
+    </section>` : '';
+  const rowsCard = `<section class="card">
+      <div class="card-h">${ic('layers')} 各项目的下一步 <span class="cnt num">${lp.length}</span></div>
+      ${lp.length ? `<div class="tlist">${rows.map(todayRow).join('')}</div>`
+        : `<div class="tlist-empty"><span>${projects.length ? '没有进行中的项目。' : '还没有项目。每个项目只需要四块信息：总体目标、路线、当前进度、下一步。'}</span><button class="btn primary sm" id="emptyNew" data-act="newProject">${ic('plus')} 新建项目</button></div>`}
+    </section>`;
+  // 夜间打开页面的意图是学习：每晚可做放最前；其余顺序不变，避免卡片跳位
+  const cards = night
+    ? [renderNightlyCard(), renderDailyCard(), renderWeeklyCard(), urgentCard, rowsCard]
+    : [renderDailyCard(), renderWeeklyCard(), urgentCard, rowsCard, renderNightlyCard()];
   return `<div class="wrap">
     <header class="ph">
       <div class="ph-row"><div class="crumb">${ic('check')} 今日 ${ic('chev')} <span>${fmtDate(t, true)}</span></div></div>
       <h1 class="ptitle">今日</h1>
       ${chips ? `<div class="chips">${chips}</div>` : ''}
     </header>
-    <section class="card">
-      <div class="card-h">${ic('check')} 每日必做
-        ${st.total ? `<div class="right"><div class="mini"><div class="rail ${st.complete ? 'ok' : ''}"><i style="width:${pct}%"></i></div><span class="num"><span data-count="${st.doneToday}">${st.doneToday}</span> / ${st.total}</span></div></div>` : ''}
+    ${cards.join('')}
+  </div>`;
+}
+
+/* ================= 回收站 ================= */
+// 所有删除都先进回收站：30 天后自动清除，最多 200 条。子条目（阶段 / 下一步 / 记录）依赖所属项目
+const TRASH_KEEP = 30, TRASH_MAX = 200;
+const projectInTrash = pid => trash.some(e => e.kind === 'project' && e.data.id === pid);
+function trashPut(kind, data, {projectId = '', index = 0} = {}){
+  const e = {id:uid(), kind, deletedAt:todayISO(), projectId, index, data};
+  trash.unshift(e);
+  if(trash.length > TRASH_MAX) trash.length = TRASH_MAX;
+  return e;
+}
+function purgeTrash(){   // 清除过期条目，以及所属项目已不存在（既不在项目里也不在回收站里）的子条目
+  const before = trash.length, t = todayISO();
+  trash = trash.filter(e => daysBetween(e.deletedAt, t) <= TRASH_KEEP);
+  trash = trash.filter(e => !CHILD_KINDS.includes(e.kind) || byId(e.projectId) || projectInTrash(e.projectId));
+  return trash.length !== before;
+}
+function trashTitle(e){
+  const d = e.data || {};
+  return (e.kind === 'project' ? d.name : e.kind === 'stage' ? d.title : CHILD_KINDS.includes(e.kind) ? d.what : d.text) || '未命名';
+}
+const agoText = iso => { const n = daysBetween(iso, todayISO()); return n <= 0 ? '今天' : n === 1 ? '昨天' : `${n} 天前`; };
+function restoreTrash(entryId){
+  const e = trash.find(x => x.id === entryId); if(!e) return false;
+  const d = e.data;
+  if(e.kind === 'project'){
+    if(byId(d.id)) d.id = uid();   // 导入造成的 id 冲突时换新 id
+    projects.splice(Math.min(e.index, projects.length), 0, normProject(d));
+  } else if(CHILD_KINDS.includes(e.kind)){
+    const p = byId(e.projectId);
+    if(!p){ toast(projectInTrash(e.projectId) ? '先恢复所属项目' : '所属项目已不存在'); return false; }
+    if(e.kind === 'step'){
+      if(p.current){ toast('该项目已有下一步，先完成或删除它'); return false; }
+      p.current = d;
+    } else {
+      const arr = e.kind === 'stage' ? p.roadmap : p.history;
+      arr.splice(Math.min(e.index, arr.length), 0, d);
+    }
+  } else {
+    const L = listOf(e.kind);
+    L.items.splice(Math.min(e.index, L.items.length), 0, d);
+    syncTotal(e.kind);
+  }
+  trash = trash.filter(x => x !== e);
+  fx = true; save(); render(); toast('已恢复');
+  return true;
+}
+function trashAndToast(kind, data, opts, msg = '已移到回收站'){
+  const e = trashPut(kind, data, opts);
+  fx = true; save(); render();
+  toast(msg, () => restoreTrash(e.id));
+}
+function renderTrash(){
+  purgeTrash();
+  const rows = [...trash].sort((a, b) => byDeadline(b.deletedAt, a.deletedAt)).map(e => {
+    const parent = CHILD_KINDS.includes(e.kind) ? (byId(e.projectId) || trash.find(x => x.kind === 'project' && x.data.id === e.projectId)?.data) : null;
+    const blocked = CHILD_KINDS.includes(e.kind) && !byId(e.projectId);
+    const from = parent ? (blocked ? `所属项目「${esc(parent.name || '未命名')}」也在回收站 · ` : `「${esc(parent.name || '未命名')}」 · `) : '';
+    const left = TRASH_KEEP - daysBetween(e.deletedAt, todayISO());
+    return `<div class="trow">
+      <div class="tname"><span class="badge plain">${KIND_LABEL[e.kind]}</span><span>${esc(trashTitle(e))}</span></div>
+      <div class="tmid"><span class="twhat muted">${from}删除于 ${agoText(e.deletedAt)}</span></div>
+      <div class="tend">
+        <span class="badge plain">还剩 ${left} 天</span>
+        <button class="btn sm" data-tact="restore" data-tid="${esc(e.id)}" ${blocked ? `disabled title="先恢复项目「${esc(parent?.name || '未命名')}」"` : ''}>${ic('undo')} 恢复</button>
+        <button class="btn danger-ghost sm" data-tact="purge" data-tid="${esc(e.id)}">彻底删除</button>
       </div>
-      ${items ? `<ul class="dlist">${items}</ul>` : '<div class="hist-empty">把每天必须做的事加进来，例如“矩阵账号各发 1 条内容”。</div>'}
-      <form class="dadd" id="dailyAddForm"><input id="dailyAddInput" maxlength="80" placeholder="添加一项，回车保存（勾选每天自动清空）" autocomplete="off"><button class="btn primary sm" type="submit">${ic('plus')} 添加</button></form>
-    </section>
-    ${overdue.length ? `<section class="card urgent">
-      <div class="card-h">${ic('alert')} 需要处理 <span class="cnt num">${overdue.length}</span></div>
-      <div class="tlist">${urgent}</div>
-    </section>` : ''}
+    </div>`;
+  }).join('');
+  return `<div class="wrap">
+    <header class="ph">
+      <div class="ph-row"><div class="crumb">${ic('trash')} 回收站</div></div>
+      <h1 class="ptitle">回收站</h1>
+      <div class="chips"><span class="chip">${trash.length} 项 · ${TRASH_KEEP} 天后自动清除</span></div>
+    </header>
     <section class="card">
-      <div class="card-h">${ic('layers')} 各项目的下一步 <span class="cnt num">${projects.length}</span></div>
-      ${projects.length ? `<div class="tlist">${rows.map(todayRow).join('')}</div>`
-        : `<div class="tlist-empty"><span>还没有项目。每个项目只需要四块信息：总体目标、路线、当前进度、下一步。</span><button class="btn primary sm" id="emptyNew" data-act="newProject">${ic('plus')} 新建项目</button></div>`}
+      <div class="card-h">${ic('trash')} 已删除
+        ${trash.length ? '<div class="right"><button class="btn danger-ghost sm" data-tact="clear">清空回收站</button></div>' : ''}
+      </div>
+      ${trash.length ? `<div class="tlist">${rows}</div>` : `<div class="hist-empty">删除的东西会先放在这里 ${TRASH_KEEP} 天。</div>`}
     </section>
   </div>`;
 }
 
 /* ================= 渲染：侧栏 ================= */
+let showArchived = false;
 function renderNav(){
   const nav = document.getElementById('nav');
   const st = dailyStats();
@@ -861,14 +1162,18 @@ function renderNav(){
       <span class="nav-ic ${st.complete ? 'done' : ''}">${ic('check')}</span><span class="nav-name">今日</span><span class="nav-meta num">${st.total ? `${st.doneToday}/${st.total}` : '空'}</span>
     </button>
     <div class="side-label">项目</div>`;
-  nav.innerHTML = dailyItem + projects.map(p => {
-    const h = health(p);
-    const g = p.goal || {};
-    const meta = goalSet(g) ? (daysLeft(g.deadline) < 0 ? '逾期' : `剩 ${daysLeft(g.deadline)} 天`) : '未设目标';
-    return `<button class="nav-item ${p.id === selectedId ? 'active' : ''}" data-sel="${esc(p.id)}">
+  const item = p => {
+    const h = health(p), g = p.goal || {};
+    const meta = archived(p) ? (p.status === 'done' ? '完成' : '放弃') : goalSet(g) ? (daysLeft(g.deadline) < 0 ? '逾期' : `剩 ${daysLeft(g.deadline)} 天`) : '未设目标';
+    return `<button class="nav-item ${archived(p) ? 'archived' : ''} ${p.id === selectedId ? 'active' : ''}" data-sel="${esc(p.id)}">
       <span class="dot ${h.k}"></span><span class="nav-name">${esc(p.name || '未命名项目')}</span><span class="nav-meta num">${meta}</span>
     </button>`;
-  }).join('');
+  };
+  const arch = projects.filter(archived).sort((a, b) => byDeadline(b.endedAt || '', a.endedAt || ''));
+  const open = showArchived || (cur() && archived(cur()));
+  nav.innerHTML = dailyItem + live().map(item).join('')
+    + (arch.length ? `<button class="side-toggle ${open ? 'open' : ''}" data-toggle="archived">${ic('chev')}已归档 ${arch.length}</button>${open ? arch.map(item).join('') : ''}` : '')
+    + (trash.length ? `<button class="nav-link nav-trash ${selectedId === 'trash' ? 'active' : ''}" data-sel="trash">${ic('trash')}<span class="nav-name">回收站</span><span class="nav-meta num">${trash.length}</span></button>` : '');
 }
 
 /* ================= 渲染：主区 ================= */
@@ -905,8 +1210,10 @@ function renderHero(p){
         <span>${ic('calendar')}截止 ${fmtDate(g.deadline, true)}</span>
         <span class="badge ${info.tone}">${info.text}</span>
         ${reached ? `<span class="badge ok">${ic('check')} 已达成</span>` : ''}
+        ${reached && !archived(p) ? `<button class="btn sm" data-act="endProject">${ic('archive')} 结束项目</button>` : ''}
         <button class="btn sm" data-act="updateCurrent">${ic('activity')} 更新完成量</button>
       </div>
+      ${!archived(p) && info.n < 0 ? `<div class="decide">${ic('alert')} 总体截止已过 ${-info.n} 天，先做一个决定<span class="decide-act"><button class="btn sm" data-act="editGoal">延期</button><button class="btn sm" data-act="endProject">${ic('archive')} 结束项目</button></span></div>` : ''}
       <div class="rail-h"><span>完成进度</span><span class="num">${hasCur ? `<b>${fmtNum(g.current)}</b> / ${fmtNum(g.target)} ${esc(g.unit)} · ${pctG}%` : '还没记录完成量'}</span></div>
       <div class="rail ${reached ? 'ok' : ''}"><i style="width:${pctG}%"></i></div>
       <div class="rail-h"><span>时间进度</span><span class="num">已过 ${pctT}%</span></div>
@@ -984,16 +1291,22 @@ function renderRoadmap(p){
 }
 
 function renderNext(p){
-  const c = p.current;
+  const c = p.current, arch = archived(p);
   if(!c){
+    if(arch) return `<section class="card next empty">
+      <div class="card-h">${ic('zap')} 下一步</div>
+      <div class="next-what">项目已结束</div>
+    </section>`;
+    const hint = canClose(p) ? `${goalReached(p) ? '目标已达成' : '路线已全部完成'}，可以结束项目，或者再定一步。`
+      : !p.history.length ? '定一件具体的事：做什么、做到什么程度、哪天之前。' : p.history[p.history.length - 1].outcome === 'abandoned' ? '上一步已放弃，重新定一个下一步。' : '上一步已完成，接着定下一步要做什么。';
     return `<section class="card next empty">
       <div class="card-h">${ic('zap')} 下一步</div>
       <div class="next-what">还没有设定下一步</div>
-      <p>${!p.history.length ? '定一件具体的事：做什么、做到什么程度、哪天之前。' : p.history[p.history.length - 1].outcome === 'abandoned' ? '上一步已放弃，重新定一个下一步。' : '上一步已完成，接着定下一步要做什么。'}</p>
+      <p>${hint}</p>
       <button class="btn primary" data-act="newStep">${ic('plus')} 设定下一步</button>
     </section>`;
   }
-  const info = due(c.deadline), overdue = info.n < 0;
+  const info = due(c.deadline), overdue = !arch && info.n < 0;
   const rs = Array.isArray(c.reschedules) ? c.reschedules : [];
   const rsBadge = rs.length ? `<span class="badge warn" title="${esc(rs.map(r => `${fmtDate(r.from)} → ${fmtDate(r.to)} · ${r.reason}`).join('\n'))}">已改期 ${rs.length} 次</span>` : '';
   return `<section class="card next ${overdue ? 'overdue' : ''}">
@@ -1005,8 +1318,8 @@ function renderNext(p){
       <div class="next-row">${ic('calendar')}<div><div class="k">截止</div><div class="v">${fmtDate(c.deadline, true)}</div></div></div>
     </div>
     <div class="next-act">
-      <button class="btn ok" data-act="doneStep">${ic('check')} 完成这一步</button>
-      ${overdue ? `<button class="btn" data-act="rescheduleStep">${ic('calendar')} 改期</button><button class="btn ghost" data-act="abandonStep">放弃</button>` : '<button class="btn ghost" data-act="editStep">修改</button>'}
+      ${arch ? '<span class="badge plain">已归档</span>' : `<button class="btn ok" data-act="doneStep">${ic('check')} 完成这一步</button>
+      ${overdue ? `<button class="btn" data-act="rescheduleStep">${ic('calendar')} 改期</button><button class="btn ghost" data-act="abandonStep">放弃</button>` : '<button class="btn ghost" data-act="editStep">修改</button>'}`}
       <span class="meta">设定于 ${fmtDate(c.createdAt)}</span>
     </div>
   </section>`;
@@ -1035,21 +1348,32 @@ function renderHistory(p){
 // 进度过期时健康徽标已说明“N 天没更新”，不再重复显示时效徽标
 function projectChips(p){
   const h = health(p), ph = phaseOf(p), f = freshInfo(p);
+  if(archived(p)) return `<span class="chip ${ph.k}"><span class="dot"></span>${esc(ph.text)}</span>
+        <span class="chip ${p.status === 'done' ? 'ok' : ''}">${p.status === 'done' ? ic('check') + '已完成' : '已放弃'} · ${fmtDate(p.endedAt)}</span>`;
   return `<span class="chip ${ph.k}"><span class="dot"></span>${esc(ph.text)}</span>
         <span class="chip ${h.k}">${h.stale ? ic('clock') + ' ' : ''}${h.text}</span>
         ${h.stale ? '' : `<span class="chip">进度更新于 ${f.text}</span>`}`;
 }
 function freshNote(p){ const f = freshInfo(p); return `<span class="fresh-note ${f.stale ? 'warn' : ''}" data-fresh-note>更新于 ${f.text}</span>`; }
 function renderProject(p){
+  const arch = archived(p);
   return `<div class="wrap">
     <header class="ph">
       <div class="ph-row">
-        <div class="crumb">${ic('layers')} 项目 ${ic('chev')} <span>${esc(p.name || '未命名项目')}</span></div>
-        <button class="btn danger-ghost sm" data-act="delProject">${ic('trash')} 删除项目</button>
+        <div class="crumb">${ic('layers')} ${arch ? '已归档' : '项目'} ${ic('chev')} <span>${esc(p.name || '未命名项目')}</span></div>
+        <div class="ph-act">
+          ${arch ? `<button class="btn sm" data-act="reopenProject">${ic('undo')} 恢复为进行中</button>`
+            : `<button class="btn ${canClose(p) ? 'primary' : ''} sm" data-act="endProject">${ic('archive')} 结束项目</button>`}
+          <button class="btn danger-ghost sm" data-act="delProject">${ic('trash')} 删除项目</button>
+        </div>
       </div>
       <h1 class="ptitle ed" contenteditable="true" data-ed="name" data-ph="项目名称">${esc(p.name)}</h1>
       <div class="chips">${projectChips(p)}</div>
     </header>
+    ${arch ? `<section class="card soft">
+      <div class="card-h">${ic('note')} 复盘</div>
+      <div class="ed" contenteditable="true" data-ed="review" data-ph="一句复盘">${esc(p.review || '')}</div>
+    </section>` : ''}
     <div class="two">
       <section class="card">
         <div class="card-h">${ic('activity')} 当前进度 <div class="right">${freshNote(p)}</div></div>
@@ -1084,7 +1408,7 @@ let lastMid = null;   // 刚切换状态的阶段，渲染后让节点弹一下
 function countUp(el){
   const target = parseInt(el.dataset.count, 10); if(!(target > 0)) return;
   const dur = 900, t0 = performance.now();
-  const tick = now => { const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(target * e); if(k < 1) requestAnimationFrame(tick); };
+  const tick = ts => { const k = Math.min(1, (ts - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = Math.round(target * e); if(k < 1) requestAnimationFrame(tick); };
   requestAnimationFrame(tick);
 }
 function afterRender(){
@@ -1113,9 +1437,10 @@ function burst(x, y){
   }
 }
 function render(){
-  if(selectedId !== 'daily' && !cur()) selectedId = 'daily';
+  if(selectedId === 'trash' && !trash.length) selectedId = 'daily';
+  if(!VIEWS.includes(selectedId) && !cur()) selectedId = 'daily';
   renderNav();
-  main.innerHTML = selectedId === 'daily' ? renderToday() : renderProject(cur());
+  main.innerHTML = selectedId === 'daily' ? renderToday() : selectedId === 'trash' ? renderTrash() : renderProject(cur());
   afterRender();
 }
 function goProject(id){
@@ -1275,6 +1600,47 @@ abandonForm.addEventListener('submit', e => {
   toast('这一步已放弃，记录已保留', () => { p.history = p.history.filter(h => h.id !== rec.id); p.current = prev; fx = true; save(); render(); });
 });
 
+/* 结束项目：完成 / 放弃 + 一句复盘，结束即归档 */
+const endDlg = document.getElementById('endDlg'), endForm = document.getElementById('endForm');
+let endId = null;
+function endOutcome(){ return endForm.querySelector('input[name="outcome"]:checked')?.value || ''; }
+function refreshEnd(){
+  const r = F(endForm, 'review'), o = endOutcome();
+  r.setCustomValidity(r.value.trim().length >= 2 ? '' : '至少写两个字');
+  r.placeholder = o === 'dropped' ? '为什么停，学到了什么' : '最有效的一件事是什么，下次还这么做';
+  endForm.querySelectorAll('.quick-opt').forEach(l => l.setAttribute('aria-checked', String(l.querySelector('input').checked)));
+  document.getElementById('endSubmit').disabled = !(o && endForm.checkValidity());
+}
+function openEndDlg(id){
+  const p = byId(id); if(!p) return;
+  endId = id; endForm.reset();
+  const g = p.goal || {}, doneSteps = p.history.filter(h => h.outcome !== 'abandoned').length;
+  const parts = [goalSet(g) ? `目标 ${typeof g.current === 'number' ? fmtNum(g.current) : '未记录'} / ${fmtNum(g.target)} ${g.unit}` : '未设目标',
+    p.roadmap.length ? `路线 ${p.roadmap.filter(m => m.status === 'done').length} / ${p.roadmap.length} 阶段` : '',
+    doneSteps ? `完成 ${doneSteps} 步` : ''];
+  document.getElementById('endLead').textContent = parts.filter(Boolean).join(' · ');
+  document.getElementById('endCurrent').hidden = !p.current;
+  if(canClose(p)) endForm.querySelector('input[value="done"]').checked = true;
+  F(endForm, 'review').value = p.review || '';
+  refreshEnd(); endDlg.showModal();
+}
+endForm.addEventListener('input', refreshEnd);
+endForm.addEventListener('change', refreshEnd);
+endForm.addEventListener('submit', e => {
+  e.preventDefault();
+  refreshEnd();
+  const o = endOutcome(), p = byId(endId);
+  if(!o || !endForm.checkValidity() || !p) return;
+  const prev = {status:p.status, endedAt:p.endedAt, review:p.review};
+  p.status = o; p.endedAt = todayISO(); p.review = F(endForm, 'review').value.trim();
+  endDlg.close(); fx = true; save(); render();
+  if(o === 'done') burst(innerWidth / 2, innerHeight / 3);
+  toast(o === 'done' ? '项目已完成，移入已归档' : '项目已放弃，移入已归档', () => {
+    for(const k of ['status', 'endedAt', 'review']){ if(prev[k] === undefined) delete p[k]; else p[k] = prev[k]; }
+    fx = true; save(); render();
+  });
+});
+
 /* 提示条（可撤销） */
 let toastTimer;
 function toast(msg, undo){
@@ -1288,12 +1654,14 @@ function toast(msg, undo){
 }
 
 document.getElementById('stepDelete').addEventListener('click', () => {
-  const p = cur();
-  if(p.current && confirm('删除当前这一步？不会进入已完成记录。')){ p.current = null; stepDlg.close(); save(); render(); }
+  const p = cur(); if(!p || !p.current) return;
+  const step = p.current; p.current = null; stepDlg.close();
+  trashAndToast('step', step, {projectId:p.id});
 });
 
 /* ================= 交互 ================= */
 document.getElementById('nav').addEventListener('click', e => {
+  if(e.target.closest('[data-toggle="archived"]')){ showArchived = !showArchived; renderNav(); return; }
   const b = e.target.closest('[data-sel]'); if(!b) return;
   selectedId = b.dataset.sel; localStorage.setItem(SEL_KEY, selectedId); fx = true; render();
   window.scrollTo({top:0});
@@ -1310,6 +1678,9 @@ main.addEventListener('click', e => {
   else if(act === 'updateCurrent') openCurDlg();
   else if(act === 'newStep'){ if(p !== cur()) goProject(p.id); openStepDlg('new'); }
   else if(act === 'editStep') openStepDlg('edit');
+  else if(act === 'endProject') openEndDlg(p.id);
+  else if(act === 'reopenProject'){ p.status = 'active'; p.endedAt = ''; fx = true; save(); render(); toast('已恢复为进行中'); }
+  else if(act === 'extendGoal'){ if(p !== cur()) goProject(p.id); openProjectDlg('goal'); }
   else if(act === 'rescheduleStep') openResDlg(p.id);
   else if(act === 'abandonStep') openAbandonDlg(p.id);
   else if(act === 'doneStep'){
@@ -1332,17 +1703,21 @@ main.addEventListener('click', e => {
     main.querySelector(`[data-ed="msTitle"][data-mid="${esc(m.id)}"]`)?.focus();
   }
   else if(act === 'delMs'){
-    const m = p.roadmap.find(x => x.id === t.dataset.mid);
-    if(confirm(`删除阶段「${m.title || '未命名'}」？`)){ p.roadmap = p.roadmap.filter(x => x !== m); save(); render(); }
+    const index = p.roadmap.findIndex(x => x.id === t.dataset.mid); if(index < 0) return;
+    const [m] = p.roadmap.splice(index, 1);
+    trashAndToast('stage', m, {projectId:p.id, index});
   }
   else if(act === 'delHist'){
-    if(confirm('从已完成记录里删除这一条？')){ p.history = p.history.filter(h => h.id !== t.dataset.hid); save(); render(); }
+    const index = p.history.findIndex(h => h.id === t.dataset.hid); if(index < 0) return;
+    const [h] = p.history.splice(index, 1);
+    trashAndToast('history', h, {projectId:p.id, index});
   }
   else if(act === 'toggleHist'){ p._all = !p._all; render(); }
   else if(act === 'delProject'){
-    if(confirm(`确定删除「${p.name || '这个项目'}」？删除后无法恢复，建议先导出备份。`)){
-      projects = projects.filter(x => x !== p); selectedId = projects[0]?.id || 'daily'; fx = true; save(); render();
-    }
+    const index = projects.indexOf(p);
+    projects = projects.filter(x => x !== p);
+    selectedId = live()[0]?.id || 'daily';   // 停在剩下的第一个进行中项目（现有测试“删除后回到剩余项目”依赖此行为）
+    trashAndToast('project', p, {index}, '项目已移到回收站');
   }
 });
 
@@ -1358,50 +1733,81 @@ main.addEventListener('change', e => {
   m.due = inp.value || ''; save(); render();
 });
 
-/* 每日必做交互 */
+/* 清单交互（每日 / 每周 / 每晚）：每日按钮不带 data-list，默认 daily */
 main.addEventListener('click', e => {
+  const open = e.target.closest('[data-lopen]');
+  if(open){ const k = open.dataset.lopen; listOpen[k] = !listOpen[k]; render(); return; }
   const t = e.target.closest('[data-dact]'); if(!t) return;
-  const id = t.dataset.did, today = todayISO();
+  const kind = t.dataset.list || 'daily', L = listOf(kind), id = t.dataset.did, key = LISTS[kind].key();
   if(t.dataset.dact === 'toggle'){
-    const before = dailyStats().complete;
-    const set = new Set(daily.log[today]?.done || []);
+    const before = kind === 'daily' ? dailyStats().complete : listStats(kind).complete;
+    const set = new Set(L.log[key]?.done || []);
     set.has(id) ? set.delete(id) : set.add(id);
-    daily.log[today] = {done:[...set], total: daily.items.length};
-    const cutoff = addDays(today, -120);
-    Object.keys(daily.log).forEach(k => { if(k < cutoff) delete daily.log[k]; });
+    L.log[key] = {done:[...set], total:L.items.length};
+    const cutoff = addDays(todayISO(), -LISTS[kind].keep);
+    Object.keys(L.log).forEach(k => { if(k < cutoff) delete L.log[k]; });
+    if(kind === 'weekly') listOpen.weekly = false;   // 再次全部完成时自动收起
     save(); render();
-    const st = dailyStats();
-    if(st.complete && !before){ burst(innerWidth / 2, innerHeight / 3); toast('今日必做全部完成'); }
+    const after = kind === 'daily' ? dailyStats().complete : listStats(kind).complete;
+    if(after && !before && kind !== 'nightly'){ burst(innerWidth / 2, innerHeight / 3); toast(kind === 'daily' ? '今日必做全部完成' : '本周必做全部完成'); }
   } else if(t.dataset.dact === 'del'){
-    const item = daily.items.find(i => i.id === id);
-    if(item && confirm(`删除「${item.text || '未命名'}」？`)){
-      daily.items = daily.items.filter(i => i.id !== id);
-      Object.values(daily.log).forEach(l => { l.done = l.done.filter(x => x !== id); });
-      syncDailyTotal(); save(); render();
-    }
+    const index = L.items.findIndex(i => i.id === id); if(index < 0) return;
+    const [item] = L.items.splice(index, 1);
+    if(L.log[key]) L.log[key].done = L.log[key].done.filter(x => x !== id);   // 只抹当期勾选，历史记录保留
+    syncTotal(kind);
+    trashAndToast(kind, item, {index});
+  } else if(t.dataset.dact === 'link'){
+    const item = L.items.find(i => i.id === id); if(!item) return;
+    const v = prompt('链接（留空清除）', item.url || '');
+    if(v === null) return;
+    const u = v.trim();
+    if(u && !/^https?:\/\//.test(u)){ toast('链接需以 http:// 或 https:// 开头'); return; }
+    item.url = u; save(); render();
   }
 });
 main.addEventListener('submit', e => {
-  if(e.target.id !== 'dailyAddForm') return;
+  const f = e.target; if(!f.classList || !f.classList.contains('dadd')) return;
   e.preventDefault();
-  const input = document.getElementById('dailyAddInput'), v = input.value.trim();
+  const kind = f.dataset.list || 'daily', L = listOf(kind);
+  const input = document.getElementById(kind + 'AddInput'), v = input.value.trim();
   if(!v) return;
-  daily.items.push({id:uid(), text:v, createdAt:todayISO()});
-  syncDailyTotal(); save(); render();
-  document.getElementById('dailyAddInput')?.focus();
+  const item = {id:uid(), text:v, createdAt:todayISO()};
+  if(kind === 'nightly'){
+    const u = document.getElementById('nightlyAddUrl').value.trim();
+    if(u && !/^https?:\/\//.test(u)){ toast('链接需以 http:// 或 https:// 开头'); return; }
+    item.url = u;
+  }
+  L.items.push(item);
+  syncTotal(kind); save(); render();
+  document.getElementById(kind + 'AddInput')?.focus();
+});
+/* 回收站页 */
+main.addEventListener('click', e => {
+  const t = e.target.closest('[data-tact]'); if(!t || t.disabled) return;
+  if(t.dataset.tact === 'restore') restoreTrash(t.dataset.tid);
+  else if(t.dataset.tact === 'purge'){
+    const en = trash.find(x => x.id === t.dataset.tid); if(!en) return;
+    if(!confirm(`彻底删除「${trashTitle(en)}」？删除后无法恢复。`)) return;
+    trash = trash.filter(x => x !== en);
+    purgeTrash();   // 彻底删除项目时，它在回收站里的阶段 / 下一步 / 记录一并清除
+    save(); render();
+  } else if(t.dataset.tact === 'clear'){
+    if(!confirm(`清空回收站里的 ${trash.length} 项？清空后无法恢复。`)) return;
+    trash = []; save(); render();
+  }
 });
 
 main.addEventListener('keydown', e => {
   const t = e.target;
-  if(e.key === 'Enter' && !e.shiftKey && t.matches('[data-ed="name"],[data-ed="msTitle"],[data-ed="dailyText"]')){ e.preventDefault(); t.blur(); }
+  if(e.key === 'Enter' && !e.shiftKey && t.matches('[data-ed="name"],[data-ed="msTitle"],[data-ed="dailyText"],[data-ed="listText"]')){ e.preventDefault(); t.blur(); }
   if(e.key === 'Escape' && t.matches('[data-ed]')) t.blur();
 });
 main.addEventListener('focusout', e => {
   const t = e.target; if(!t.matches || !t.matches('[data-ed]')) return;
   const text = (t.innerText !== undefined ? t.innerText : t.textContent).replace(/\n+$/,'').trim();
   const f = t.dataset.ed;
-  if(f === 'dailyText'){
-    const item = daily.items.find(i => i.id === t.dataset.did); if(!item || item.text === text) return;
+  if(f === 'dailyText' || f === 'listText'){
+    const item = listOf(t.dataset.list || 'daily').items.find(i => i.id === t.dataset.did); if(!item || item.text === text) return;
     item.text = text; save(); return;
   }
   const p = cur(); if(!p) return;
@@ -1428,7 +1834,7 @@ main.addEventListener('focusout', e => {
 /* ================= 侧栏工具 ================= */
 document.getElementById('newProjectBtn').addEventListener('click', () => openProjectDlg('create'));
 document.getElementById('exportBtn').addEventListener('click', () => {
-  const blob = new Blob([JSON.stringify({version:3, exportedAt:new Date().toISOString(), projects, daily}, null, 2)], {type:'application/json'});
+  const blob = new Blob([JSON.stringify({...stateObj(), exportedAt:new Date().toISOString()}, null, 2)], {type:'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `工作台备份-${todayISO()}.json`;
   document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
 });
@@ -1441,7 +1847,14 @@ document.getElementById('importFile').addEventListener('change', e => {
       const d = JSON.parse(r.result);
       const list = d && Array.isArray(d.projects) ? d.projects : null;
       if(!list) throw new Error('bad');
-      if(confirm(`导入 ${list.length} 个项目，会覆盖当前全部内容，确定？`)){ projects = list.map(normProject); daily = normDaily(d.daily) || daily; selectedId = 'daily'; fx = true; save(); render(); }
+      if(confirm(`导入 ${list.length} 个项目，会覆盖当前全部内容，确定？`)){
+        projects = list.map(normProject);
+        daily = normList(d.daily) || daily;
+        weekly = normList(d.weekly) || weekly;
+        nightly = normList(d.nightly, {url:true}) || nightly;
+        if(Array.isArray(d.trash)) trash = normTrash(d.trash);   // 旧备份不带这些键时保留当前值
+        purgeTrash(); selectedId = 'daily'; fx = true; save(); render();
+      }
     }catch(err){ alert('导入失败：文件不是有效的备份格式。'); }
   };
   r.readAsText(file); e.target.value = '';
@@ -1473,7 +1886,7 @@ themeBtn.addEventListener('click', () => {
   ));
 });
 
-(function(){ const d = new Date(); document.getElementById('todayLine').textContent = `${d.getMonth()+1}月${d.getDate()}日 周${WEEK[d.getDay()]}`; })();
+(function(){ const d = now(); document.getElementById('todayLine').textContent = `${d.getMonth()+1}月${d.getDate()}日 周${WEEK[d.getDay()]}`; })();
 
 /* ================= 云端保存 ================= */
 const API = 'https://liangzai666.com/workbench/api';
@@ -1545,14 +1958,18 @@ async function loadCloud(){
   pendingState = cached?.state || null;
   const src = pendingState ? JSON.parse(pendingState) : result.data;
   projects = src.projects.map(normProject);
-  // 服务端尚未保存 daily 时，退回本机缓存里的清单（不会跨设备同步，但不丢）
-  let cachedDaily = null; try{ cachedDaily = normDaily(JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || 'null')?.daily); }catch(e){}
-  daily = normDaily(src.daily) || cachedDaily || {items:[], log:{}};
+  // 服务端没有某个清单或回收站时（旧服务端会丢弃未知顶层键），退回本机缓存里的值：不跨设备同步，但不丢
+  let cache = null; try{ cache = JSON.parse(localStorage.getItem(CLOUD_CACHE_KEY) || 'null'); }catch(e){}
+  daily = normList(src.daily) || normList(cache?.daily) || {items:[], log:{}};
+  weekly = normList(src.weekly) || normList(cache?.weekly) || {items:[], log:{}};
+  nightly = normList(src.nightly, {url:true}) || normList(cache?.nightly, {url:true}) || {items:[], log:{}};
+  trash = Array.isArray(src.trash) ? normTrash(src.trash) : normTrash(cache?.trash);
+  purgeTrash();
   if(pendingState && cached.revision !== revision){
     revision = cached.revision;
     syncStatus('服务器有新版本，本机修改尚未同步。请先导出再重新加载。', false, true);
   }else syncStatus('已连接服务器');
-  if(selectedId !== 'daily' && !projects.some(p => p.id === selectedId)) selectedId = 'daily';
+  if(!VIEWS.includes(selectedId) && !projects.some(p => p.id === selectedId)) selectedId = 'daily';
   localStorage.setItem(CLOUD_CACHE_KEY, JSON.stringify(stateObj()));
   localStorage.setItem(AUTH_KEY, accessKey);
   sessionStorage.removeItem(AUTH_KEY);
@@ -1595,6 +2012,7 @@ document.getElementById('lockBtn').addEventListener('click', () => {
 window.addEventListener('beforeunload', e => {
   if(CLOUD && pendingState){ e.preventDefault(); e.returnValue = ''; }
 });
+purgeTrash();   // 读入后清除过期条目与孤儿子条目（只在内存里，下次保存时落盘）；云端模式在 loadCloud 里再清一次
 render();
 if(CLOUD){
   if(accessKey) loadCloud().catch(() => showAuth('请输入密钥重新连接。'));
